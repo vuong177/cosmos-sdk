@@ -49,41 +49,50 @@ func ExportGenesisFileWithTime(
 }
 
 // InitializeNodeValidatorFiles creates private validator and p2p configuration files.
-func InitializeNodeValidatorFiles(config *cfg.Config) (nodeID string, valPubKey cryptotypes.PubKey, err error) {
-	return InitializeNodeValidatorFilesFromMnemonic(config, "")
+func InitializeNodeValidatorFiles(config *cfg.Config, keyType string) (nodeID string, valPubKey cryptotypes.PubKey, err error) {
+	return InitializeNodeValidatorFilesFromMnemonic(config, "", keyType)
 }
 
 // InitializeNodeValidatorFilesFromMnemonic creates private validator and p2p configuration files using the given mnemonic.
 // If no valid mnemonic is given, a random one will be used instead.
-func InitializeNodeValidatorFilesFromMnemonic(config *cfg.Config, mnemonic string) (nodeID string, valPubKey cryptotypes.PubKey, err error) {
+func InitializeNodeValidatorFilesFromMnemonic(config *cfg.Config, mnemonic string, keyType string) (nodeID string, valPubKey cryptotypes.PubKey, err error) {
 	if len(mnemonic) > 0 && !bip39.IsMnemonicValid(mnemonic) {
 		return "", nil, fmt.Errorf("invalid mnemonic")
 	}
-	nodeKey, err := p2p.LoadOrGenNodeKey(config.NodeKeyFile())
+	nodeKey, err := p2p.LoadOrGenNodeKeyCustom(config.NodeKeyFile(), keyType)
 	if err != nil {
 		return "", nil, err
 	}
-
+	fmt.Println(66)
 	nodeID = string(nodeKey.ID())
 
 	pvKeyFile := config.PrivValidatorKeyFile()
 	if err := os.MkdirAll(filepath.Dir(pvKeyFile), 0o777); err != nil {
 		return "", nil, fmt.Errorf("could not create directory %q: %w", filepath.Dir(pvKeyFile), err)
 	}
+	fmt.Println(73)
 
 	pvStateFile := config.PrivValidatorStateFile()
 	if err := os.MkdirAll(filepath.Dir(pvStateFile), 0o777); err != nil {
 		return "", nil, fmt.Errorf("could not create directory %q: %w", filepath.Dir(pvStateFile), err)
 	}
+	fmt.Println(pvStateFile)
+	fmt.Println(mnemonic)
 
 	var filePV *privval.FilePV
 	if len(mnemonic) == 0 {
-		filePV = privval.LoadOrGenFilePV(pvKeyFile, pvStateFile)
+		filePV = privval.LoadOrGenFileCustomPV(pvKeyFile, pvStateFile, keyType)
 	} else {
+		fmt.Println(keyType)
+		// TODO: support bn254 mmemonic recover
+		if keyType == "bn254" {
+			return "", nil, fmt.Errorf("don't support bn254 mmenonic")
+		}
 		privKey := tmed25519.GenPrivKeyFromSecret([]byte(mnemonic))
 		filePV = privval.NewFilePV(privKey, pvKeyFile, pvStateFile)
 		filePV.Save()
 	}
+	fmt.Println(94)
 
 	tmValPubKey, err := filePV.GetPubKey()
 	if err != nil {

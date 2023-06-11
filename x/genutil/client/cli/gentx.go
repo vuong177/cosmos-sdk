@@ -63,8 +63,9 @@ $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=o
 
 			config := serverCtx.Config
 			config.SetRoot(clientCtx.HomeDir)
+			keyType, _ := cmd.Flags().GetString(flags.FlagConsensusKeyType)
 
-			nodeID, valPubKey, err := genutil.InitializeNodeValidatorFiles(serverCtx.Config)
+			nodeID, valPubKey, err := genutil.InitializeNodeValidatorFiles(serverCtx.Config, keyType)
 			if err != nil {
 				return errors.Wrap(err, "failed to initialize node validator files")
 			}
@@ -211,6 +212,8 @@ $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=o
 
 	cmd.Flags().String(flags.FlagHome, defaultNodeHome, "The application home directory")
 	cmd.Flags().String(flags.FlagOutputDocument, "", "Write the genesis transaction JSON document to the given file instead of the default location")
+	cmd.Flags().String(flags.FlagConsensusKeyType, "ed25519", "specify the consensus key types of validator node")
+
 	cmd.Flags().AddFlagSet(fsCreateValidator)
 	flags.AddTxFlagsToCmd(cmd)
 

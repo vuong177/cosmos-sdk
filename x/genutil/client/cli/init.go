@@ -110,11 +110,13 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 			if initHeight < 1 {
 				initHeight = 1
 			}
-
-			nodeID, _, err := genutil.InitializeNodeValidatorFilesFromMnemonic(config, mnemonic)
+			keyType, _ := cmd.Flags().GetString(flags.FlagConsensusKeyType)
+			fmt.Println(114)
+			nodeID, _, err := genutil.InitializeNodeValidatorFilesFromMnemonic(config, mnemonic, keyType)
 			if err != nil {
 				return err
 			}
+			fmt.Println(119)
 
 			config.Moniker = args[0]
 
@@ -173,6 +175,7 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 	cmd.Flags().String(flags.FlagChainID, "", "genesis file chain-id, if left blank will be randomly created")
 	cmd.Flags().String(FlagDefaultBondDenom, "", "genesis file default denomination, if left blank default value is 'stake'")
 	cmd.Flags().Int64(flags.FlagInitHeight, 1, "specify the initial block height at genesis")
+	cmd.Flags().String(flags.FlagConsensusKeyType, "ed25519", "specify the consensus key types of validator node")
 
 	return cmd
 }

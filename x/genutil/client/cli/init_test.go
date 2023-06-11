@@ -233,7 +233,7 @@ func TestInitNodeValidatorFiles(t *testing.T) {
 	cfg, err := genutiltest.CreateDefaultTendermintConfig(home)
 	require.NoError(t, err)
 
-	nodeID, valPubKey, err := genutil.InitializeNodeValidatorFiles(cfg)
+	nodeID, valPubKey, err := genutil.InitializeNodeValidatorFiles(cfg, "ed25519")
 	require.NoError(t, err)
 
 	require.NotEqual(t, "", nodeID)

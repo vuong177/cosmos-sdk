@@ -251,7 +251,7 @@ func initTestnetFiles(
 			return err
 		}
 
-		nodeIDs[i], valPubKeys[i], err = genutil.InitializeNodeValidatorFiles(nodeConfig)
+		nodeIDs[i], valPubKeys[i], err = genutil.InitializeNodeValidatorFiles(nodeConfig, "ed25519")
 		if err != nil {
 			_ = os.RemoveAll(args.outputDir)
 			return err

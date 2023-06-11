@@ -80,6 +80,7 @@ const (
 	FlagTip              = "tip"
 	FlagAux              = "aux"
 	FlagInitHeight       = "initial-height"
+	FlagConsensusKeyType = "consensus-key-type"
 	// FlagOutput is the flag to set the output format.
 	// This differs from FlagOutputDocument that is used to set the output file.
 	FlagOutput = tmcli.OutputFlag
