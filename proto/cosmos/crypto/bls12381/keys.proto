@@ -1,0 +1,26 @@
+// Since: cosmos-sdk 0.43
+syntax = "proto3";
+package cosmos.crypto.bls12381;
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package                       = "github.com/cosmos/cosmos-sdk/crypto/keys/bls12381";
+
+// PubKey defines a secp256r1 ECDSA public key.
+message PubKey {
+  // Point on secp256r1 curve in a compressed representation as specified in section
+  // 4.3.6 of ANSI X9.62: https://webstore.ansi.org/standards/ascx9/ansix9621998
+  option (amino.name)             = "tendermint/PubKeyBLS12381";
+  option (amino.message_encoding) = "key_field";
+  option (gogoproto.goproto_stringer) = false;
+
+  bytes key = 1 ;
+}
+
+// PrivKey defines a secp256r1 ECDSA private key.
+message PrivKey {
+  option (amino.name)             = "tendermint/PrivKeyBLS12381";
+  option (amino.message_encoding) = "key_field";
+  // secret number serialized using big-endian encoding
+  bytes secret = 1 ;
+}

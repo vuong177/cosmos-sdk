@@ -66,6 +66,10 @@ $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=o
 			keyType, _ := cmd.Flags().GetString(flags.FlagConsensusKeyType)
 
 			nodeID, valPubKey, err := genutil.InitializeNodeValidatorFiles(serverCtx.Config, keyType)
+			fmt.Println("=================")
+			fmt.Println(valPubKey)
+			fmt.Println("=================")
+
 			if err != nil {
 				return errors.Wrap(err, "failed to initialize node validator files")
 			}

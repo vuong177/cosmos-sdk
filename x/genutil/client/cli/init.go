@@ -111,12 +111,10 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 				initHeight = 1
 			}
 			keyType, _ := cmd.Flags().GetString(flags.FlagConsensusKeyType)
-			fmt.Println(114)
 			nodeID, _, err := genutil.InitializeNodeValidatorFilesFromMnemonic(config, mnemonic, keyType)
 			if err != nil {
 				return err
 			}
-			fmt.Println(119)
 
 			config.Moniker = args[0]
 

@@ -63,36 +63,30 @@ func InitializeNodeValidatorFilesFromMnemonic(config *cfg.Config, mnemonic strin
 	if err != nil {
 		return "", nil, err
 	}
-	fmt.Println(66)
+
 	nodeID = string(nodeKey.ID())
 
 	pvKeyFile := config.PrivValidatorKeyFile()
 	if err := os.MkdirAll(filepath.Dir(pvKeyFile), 0o777); err != nil {
 		return "", nil, fmt.Errorf("could not create directory %q: %w", filepath.Dir(pvKeyFile), err)
 	}
-	fmt.Println(73)
 
 	pvStateFile := config.PrivValidatorStateFile()
 	if err := os.MkdirAll(filepath.Dir(pvStateFile), 0o777); err != nil {
 		return "", nil, fmt.Errorf("could not create directory %q: %w", filepath.Dir(pvStateFile), err)
 	}
-	fmt.Println(pvStateFile)
-	fmt.Println(mnemonic)
 
 	var filePV *privval.FilePV
 	if len(mnemonic) == 0 {
 		filePV = privval.LoadOrGenFileCustomPV(pvKeyFile, pvStateFile, keyType)
 	} else {
-		fmt.Println(keyType)
-		// TODO: support bn254 mmemonic recover
-		if keyType == "bn254" {
+		if keyType == "bls12381" {
 			return "", nil, fmt.Errorf("don't support bn254 mmenonic")
 		}
 		privKey := tmed25519.GenPrivKeyFromSecret([]byte(mnemonic))
 		filePV = privval.NewFilePV(privKey, pvKeyFile, pvStateFile)
 		filePV.Save()
 	}
-	fmt.Println(94)
 
 	tmValPubKey, err := filePV.GetPubKey()
 	if err != nil {
@@ -103,6 +97,8 @@ func InitializeNodeValidatorFilesFromMnemonic(config *cfg.Config, mnemonic strin
 	if err != nil {
 		return "", nil, err
 	}
+	fmt.Println(filePV.GetPubKey())
+	fmt.Println(valPubKey)
 
 	return nodeID, valPubKey, nil
 }
